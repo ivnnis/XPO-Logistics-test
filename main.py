@@ -1,11 +1,4 @@
 
-A = [['.','.','.','X','.'],
-     ['.','#','#','#','.'],
-     ['.','#','.','#','.'],
-     ['.','#','.','.','.'],
-     ['.','0','.','.','.']]
-
-
 def search(ch):
      i = 0
      for s in A:
@@ -14,7 +7,7 @@ def search(ch):
           i += 1
 
 
-def dist(dot):
+def dist(dot, end, nonactive):
      try:
           if A[dot[0]][dot[1]] != '#':
                if dot in nonactive:
@@ -26,26 +19,41 @@ def dist(dot):
      except:
           return 100
 
+def path(A):
+     start = search('0')
+     end = search('X')
+     active_dot = start
+     nonactive = []
 
-start = search('0')
-end = search('X')
-active_dot = start
-nonactive = []
+     for st in A:
+          print(' '.join(st))
+     print()   
 
-for st in A:
-     print(' '.join(st))
-print()   
+     while active_dot != end:
+          next_dots = [[active_dot[0],active_dot[1]-1],
+                    [active_dot[0]-1,active_dot[1]],
+                    [active_dot[0],active_dot[1]+1],
+                    [active_dot[0]+1,active_dot[1]],]
+          next_dots_dist = list(map(lambda x: dist(x, end, nonactive), next_dots))
+          nonactive.append(active_dot)
+          A[active_dot[0]][active_dot[1]] = 'o'
+          active_dot = next_dots[next_dots_dist.index(min(next_dots_dist))]
 
-while active_dot != end:
-     next_dots = [[active_dot[0],active_dot[1]-1],
-                  [active_dot[0]-1,active_dot[1]],
-                  [active_dot[0],active_dot[1]+1],
-                  [active_dot[0]+1,active_dot[1]],]
-     next_dots_dist = list(map(dist, next_dots))
-     nonactive.append(active_dot)
-     A[active_dot[0]][active_dot[1]] = 'o'
-     active_dot = next_dots[next_dots_dist.index(min(next_dots_dist))]
+     for st in A:
+          print(' '.join(st))
 
-for st in A:
-     print(' '.join(st))
-     
+
+
+A = [['.','.','.','.','.','.','X','.','.','.'],
+     ['.','.','.','.','.','.','.','.','.','.'],
+     ['.','.','.','.','.','.','.','.','.','.'],
+     ['.','.','#','#','#','.','.','.','.','.'],
+     ['.','.','.','.','#','.','.','.','.','.'],
+     ['.','.','.','.','#','.','.','.','.','.'],
+     ['.','.','.','.','#','.','.','.','.','.'],
+     ['.','.','.','.','#','.','.','.','.','.'],
+     ['.','.','.','.','#','.','.','.','.','.'],
+     ['.','.','0','.','.','.','.','.','.','.']]
+
+
+path(A)
