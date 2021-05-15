@@ -17,7 +17,7 @@ def search_dot(A, ch):
                i += 1
 
 
-def append_active(cord, act, active_dots, target):
+def append_active(A,cord, act, active_dots, target):
      for dot in active_dots:
           if dot.cord == cord: 
                if dot.G > act.F:
@@ -38,8 +38,7 @@ def print_path(A, dot):
           A[dot.cord[0]][dot.cord[1]] = 'o'
           print_path(A, dot.parent)
 
-def path(a):
-     A = a
+def path(A):
      start = search_dot(A,'0')
      target = search_dot(A,'X')
      act = Dot(start, [], ['0','0'], -1, target)
@@ -47,46 +46,73 @@ def path(a):
      inactive_dots = []
 
      while act.H > 0:
-          append_active([act.cord[0]-1, act.cord[1]], act, active_dots, target)
-          append_active([act.cord[0], act.cord[1]+1], act, active_dots, target)
-          append_active([act.cord[0]+1, act.cord[1]], act, active_dots, target)
-          append_active([act.cord[0], act.cord[1]-1], act, active_dots, target)
+          #определение соседних точек
+          append_active(A, [act.cord[0]-1, act.cord[1]], act, active_dots, target)
+          append_active(A, [act.cord[0], act.cord[1]+1], act, active_dots, target)
+          append_active(A, [act.cord[0]+1, act.cord[1]], act, active_dots, target)
+          append_active(A, [act.cord[0], act.cord[1]-1], act, active_dots, target)
           inactive_cords = []
           if act.cord not in inactive_cords:
                inactive_dots.append(act)
           for dot in inactive_dots:
                inactive_cords.append(dot.cord)
           
-          active_dots[:] = [item for item in active_dots if item.cord not in inactive_cords]  
+          active_dots[:] = [item for item in active_dots if item.cord not in inactive_cords]
+
+          #Выбор точки с минимальным значением F из соседних 
           min = 100
-          for dot in active_dots:
-               if dot.F <= min:
+          for dot in active_dots:    
+               if dot.F <= min: 
                     act = dot
                     min = dot.F
+
      print_path(A, inactive_dots[-1])
-     for i in a:
-          print(i)
-     print(act.H)
+
+     for i in A:
+          print(' '.join(i))
+     print('\n', 'число шагов: ', act.G, '\n\n')
      
 
-A = [['.','.','X','.','.','.','.','.','.','.'],
+
+
+A = [['.','.','.','.','.','.','.','.','.','.'],
      ['.','.','.','.','.','.','.','.','.','.'],
+     ['.','.','.','X','.','.','.','.','.','.'],
+     ['.','#','#','#','#','#','#','#','#','.'],
+     ['.','#','0','.','.','.','.','.','.','.'],
+     ['.','#','.','.','.','.','.','.','.','.'],
+     ['.','#','.','.','.','.','.','.','.','.'],
+     ['.','#','.','.','.','.','.','.','.','.'],
      ['.','.','.','.','.','.','.','.','.','.'],
-     ['.','.','#','#','#','#','#','.','.','.'],
-     ['.','.','#','.','#','.','#','.','.','.'],
-     ['.','.','#','.','#','.','#','.','.','.'],
-     ['.','.','#','.','0','.','#','.','.','.'],
-     ['.','.','#','.','.','.','#','.','.','.'],
-     ['.','.','#','.','.','.','#','.','.','.'],
      ['.','.','.','.','.','.','.','.','.','.']]
 
 path(A)
 
+B = [['.','.','.','.','.','#','.','.','.','.'],
+     ['.','.','.','#','.','#','.','#','.','.'],
+     ['.','.','.','#','.','.','.','#','X','.'],
+     ['.','#','#','#','#','#','#','#','#','.'],
+     ['.','#','0','#','.','.','.','.','#','.'],
+     ['.','#','.','#','.','#','.','.','#','.'],
+     ['.','#','.','#','.','#','.','.','#','.'],
+     ['.','#','.','#','.','#','.','.','#','.'],
+     ['.','#','.','.','.','#','.','.','.','.'],
+     ['.','.','.','.','.','#','.','.','.','.']]
 
+path(B)     
 
-     
+C = [['.','.','.','X','.','.','.','.','.','.'],
+     ['.','.','.','#','#','.','.','#','.','.'],
+     ['.','.','.','.','.','.','.','#','.','.'],
+     ['.','.','#','#','#','#','#','#','.','.'],
+     ['.','.','#','.','.','.','.','#','.','.'],
+     ['.','#','#','.','#','.','.','#','.','.'],
+     ['.','.','#','.','.','.','.','#','.','.'],
+     ['.','.','.','.','.','.','.','.','.','.'],
+     ['.','.','.','.','.','.','.','0','.','.'],
+     ['.','.','.','.','.','.','.','.','.','.']]
 
-     
+path(C)     
 
 
 
