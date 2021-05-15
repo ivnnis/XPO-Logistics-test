@@ -1,4 +1,4 @@
-A = [['.','.','.','.','.','.','X','.','.','.'],
+A = [['.','.','.','.','.','X','.','.','.','.'],
      ['.','.','.','#','#','.','.','.','.','.'],
      ['.','.','.','.','.','.','.','.','.','.'],
      ['.','.','#','#','#','#','#','.','.','.'],
@@ -10,16 +10,13 @@ A = [['.','.','.','.','.','.','X','.','.','.'],
      ['.','.','0','.','.','.','.','.','.','.']]
 
 class Dot:
-     def __init__(self, cord, parent_cord, parent_gvalue):
+     def __init__(self, cord, parent, parent_cord, parent_gvalue, target):
           self.cord = cord
-          self.target = target
+          self.parent = parent
           self.parent_cord = parent_cord
           self.G = parent_gvalue + 1
-          self.H = self.get_hvalue(cord)
+          self.H = abs(target[0] - self.cord[0]) + abs(target[1] - self.cord[1])
           self.F = self.G + self.H
-     
-     def get_hvalue(self,cord):
-          return abs(target[0] - cord[0]) + abs(target[1] - cord[0])
 
 
 def search_dot(A, ch):
@@ -30,7 +27,7 @@ def search_dot(A, ch):
                i += 1
 
 
-def append_active(cord, act):
+def append_active(cord, act, active_dots):
      for dot in active_dots:
           if dot.cord == cord: 
                if dot.G > act.F:
@@ -41,41 +38,44 @@ def append_active(cord, act):
                     return 0
      try:
           if A[cord[0]][cord[1]] != '#' and cord[0]>=0 and cord[1]>=0:
-               active_dots.append(Dot(cord, act.cord, act.G))
+               active_dots.append(Dot(cord, act, act.cord, act.G))
                
      except:
           pass
 
 
-start = search_dot(A,'0')
-target = search_dot(A,'X')
-act = Dot(start, start, -1)
-active_dots = []
-inactive_dots = []
+def print_path(A, dot): 
+     if dot != []:
+          A[dot.cord[0]][dot.cord[1]] = 'o'
+          print_path(A, dot.parent)
 
-while act.H != 0:
-     A[act.cord[0]][act.cord[1]] = 'o'
-     append_active([act.cord[0]-1, act.cord[1]], act)
-     append_active([act.cord[0], act.cord[1]+1], act)
-     append_active([act.cord[0]+1, act.cord[1]], act)
-     append_active([act.cord[0], act.cord[1]-1], act)
-     check = 0
-     for dot in inactive_dots:
-          if dot.cord == act.cord:
-               check = 1
-     if check == 0:
-          inactive_dots.append(act)
-     for dot in active_dots:
-          if dot.cord == act.cord:
-               active_dots.remove(dot)
-       
-     min = 100
-     for dot in active_dots:
-          if dot.F <= min:
-               act = dot
-               min = dot.F
+def path(A):
+     start = search_dot(A,'0')
+     target = search_dot(A,'X')
+     act = Dot(start, [], ['0','0'], -1, target)
+     active_dots = []
+     inactive_dots = []
+
+     while act.H > 0:
+          append_active([act.cord[0]-1, act.cord[1]], act, active_dots)
+          append_active([act.cord[0], act.cord[1]+1], act, active_dots)
+          append_active([act.cord[0]+1, act.cord[1]], act, active_dots)
+          append_active([act.cord[0], act.cord[1]-1], act, active_dots)
+          inactive_cords = []
+          if act.cord not in inactive_cords:
+               inactive_dots.append(act)
+          for dot in inactive_dots:
+               inactive_cords.append(dot.cord)
+          
+          active_dots[:] = [item for item in active_dots if item.cord not in inactive_cords]  
+          min = 100
+          for dot in active_dots:
+               if dot.F <= min:
+                    act = dot
+                    min = dot.F
+     print_path(A, inactive_dots[-1])
      
-print(A)
+print(path(A))
 
 
      
