@@ -5,7 +5,7 @@ class Dot:
           self.parent = parent
           self.parent_cord = parent_cord
           self.G = parent_gvalue + 1
-          self.H = abs(target[0] - self.cord[0]) + abs(target[1] - self.cord[1])
+          self.H = abs(target[0] - self.cord[0]) + abs(target[1] - self.cord[1]) 
           self.F = self.G + self.H
 
 
@@ -33,7 +33,7 @@ def append_active(A,cord, act, active_dots, target):
           pass
 
 
-def print_path(A, dot): 
+def print_path(A, dot):
      if dot != []:
           A[dot.cord[0]][dot.cord[1]] = 'o'
           print_path(A, dot.parent)
@@ -44,8 +44,7 @@ def path(A):
      act = Dot(start, [], ['0','0'], -1, target)
      active_dots = []
      inactive_dots = []
-
-     while act.H > 0:
+     while abs(target[0] - act.cord[0]) + abs(target[1] - act.cord[1]) > 0:
           #определение соседних точек
           append_active(A, [act.cord[0]-1, act.cord[1]], act, active_dots, target)
           append_active(A, [act.cord[0], act.cord[1]+1], act, active_dots, target)
@@ -70,7 +69,7 @@ def path(A):
 
      for i in A:
           print(' '.join(i))
-     print('\n', 'число шагов: ', act.G, '\n\n')
+     print('\n')
      
 
 
