@@ -5,7 +5,7 @@ class Dot:
           self.parent = parent
           self.parent_cord = parent_cord
           self.G = parent_gvalue + 1
-          self.H = abs(target[0] - self.cord[0]) + abs(target[1] - self.cord[1]) 
+          self.H = abs(target[0] - self.cord[0]) + abs(target[1] - self.cord[1])
           self.F = self.G + self.H
 
 
@@ -20,7 +20,7 @@ def search_dot(A, ch):
 def append_active(A,cord, act, active_dots, target):
      for dot in active_dots:
           if dot.cord == cord: 
-               if dot.G > act.F:
+               if dot.G > act.G:
                     dot.G = act.G
                     dot.parent_cord = act.cord
                     return 0
@@ -41,10 +41,10 @@ def print_path(A, dot):
 def path(A):
      start = search_dot(A,'0')
      target = search_dot(A,'X')
-     act = Dot(start, [], ['0','0'], -1, target)
+     act = Dot(start, [], ['0','0'], 0, target)
      active_dots = []
      inactive_dots = []
-     while abs(target[0] - act.cord[0]) + abs(target[1] - act.cord[1]) > 0:
+     while abs(target[0] - act.cord[0]) + abs(target[1] - act.cord[1]) != 0:
           #определение соседних точек
           append_active(A, [act.cord[0]-1, act.cord[1]], act, active_dots, target)
           append_active(A, [act.cord[0], act.cord[1]+1], act, active_dots, target)
@@ -65,7 +65,7 @@ def path(A):
                     act = dot
                     min = dot.F
 
-     print_path(A, inactive_dots[-1])
+     print_path(A, act.parent)
 
      for i in A:
           print(' '.join(i))
@@ -78,12 +78,12 @@ A = [['.','.','.','.','.','.','.','.','.','.'],
      ['.','.','.','.','.','.','.','.','.','.'],
      ['.','.','.','X','.','.','.','.','.','.'],
      ['.','#','#','#','#','#','#','#','#','.'],
-     ['.','#','0','.','.','.','.','.','.','.'],
+     ['.','#','.','.','.','.','.','.','.','.'],
      ['.','#','.','.','.','.','.','.','.','.'],
      ['.','#','.','.','.','.','.','.','.','.'],
      ['.','#','.','.','.','.','.','.','.','.'],
      ['.','.','.','.','.','.','.','.','.','.'],
-     ['.','.','.','.','.','.','.','.','.','.']]
+     ['.','.','0','.','.','.','.','.','.','.']]
 
 path(A)
 
